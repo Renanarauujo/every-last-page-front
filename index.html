@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Every Last Page</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2315130f'/%3E%3Cpath d='M9 7h10a4 4 0 0 1 4 4v14H13a4 4 0 0 1-4-4z' fill='%23d9a15b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="top">
+    <h1>Every Last Page</h1>
+    <p>Estante de leitura</p>
+  </header>
+
+  <main class="layout">
+    <section class="left" aria-label="Ambiente">
+      <form id="video-form" class="bar">
+        <input id="video-url" type="text" placeholder="Link de um vídeo do YouTube" aria-label="Link do vídeo" autocomplete="off">
+        <button type="submit">Tocar</button>
+      </form>
+      <div id="player" class="player">
+        <p class="empty">Cole o link de uma música ou de um ambiente para ler.</p>
+      </div>
+
+      <section class="panel" aria-labelledby="panel-title">
+        <h2 id="panel-title">Painel</h2>
+        <div id="stats" class="stats"></div>
+        <h3>Livros lidos por mês</h3>
+        <div id="chart" class="chart"></div>
+      </section>
+    </section>
+
+    <section class="right" aria-label="Estante">
+      <form id="search-form" class="bar">
+        <input id="search-q" type="search" placeholder="Buscar por título, autor ou ISBN" aria-label="Buscar livros" minlength="2" maxlength="100" autocomplete="off">
+        <button type="submit">Buscar</button>
+      </form>
+      <ul id="results" class="results"></ul>
+
+      <div id="shelf" class="shelf"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
