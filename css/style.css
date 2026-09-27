@@ -179,9 +179,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ── Mensagens de estado ── */
 .toast { position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 16px); background: var(--navy-900); color: var(--cream); padding: 9px 16px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 10; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-.toast.ok { box-shadow: inset 3px 0 0 var(--read); }
+.toast::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; background: var(--dot, transparent); }
+.toast.ok { --dot: var(--read); }
 .toast.error { background: #8f2b1a; }
-.toast.loading { box-shadow: inset 3px 0 0 var(--coral); }
+.toast.loading { --dot: var(--coral); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
