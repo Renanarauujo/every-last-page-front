@@ -1,4 +1,4 @@
-// Ficha lateral do livro: status, nota, datas, comentario e remocao.
+// Ficha do livro em janela: status, nota, datas, comentario e remocao.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { LABEL, LISTS, state } from "./state.js";

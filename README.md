@@ -57,7 +57,7 @@ tudo, use `docker compose down -v`.
 | Adicionar à estante | `POST /shelf` |
 | Mostrar o quadro com as listas Quero ler, Lendo, Lido e Abandonado, com filtro por texto e ordenação | `GET /shelf?order=` |
 | Arrastar o cartão para outra lista (ou usar ← e →) e dar nota nas estrelas do cartão | `PUT /shelf/{id}` |
-| Abrir o cartão na ficha lateral: trocar o status, dar nota, editar as datas de início e conclusão e escrever o comentário | `PUT /shelf/{id}` |
+| Abrir o cartão na ficha do livro (janela): trocar o status, dar nota, editar as datas de início e conclusão e escrever o comentário | `PUT /shelf/{id}` |
 | Remover da estante pelo × do cartão ou pela ficha | `DELETE /shelf/{id}` |
 | Painel: contagem por status, páginas lidas, nota média, livros lidos por mês e distribuição das notas | `GET /shelf/summary` |
 
@@ -103,7 +103,7 @@ js/icons.js         ícones em SVG
 js/layout.js        largura ajustável das colunas
 js/search.js        busca com filtros e adição
 js/board.js         quadro, cartões e arrastar e soltar
-js/sheet.js         ficha lateral do livro
+js/sheet.js         ficha do livro em janela
 js/panel.js         painel
 img/logo.png        ícone do projeto
 fonts/              fonte Rubik (woff2) e licença

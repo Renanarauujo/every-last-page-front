@@ -1,4 +1,4 @@
-// Quadro da estante: uma lista por status, com cartoes que abrem a ficha lateral.
+// Quadro da estante: uma lista por status, com cartoes que abrem a ficha do livro.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { icon } from "./icons.js";
@@ -60,7 +60,7 @@ function card(b) {
       el("span", { title: dateTitle(b) }, shortDate(b.finished_at || b.started_at || b.added_at)),
       el("button", { type: "button", disabled: i === LISTS.length - 1, title: i < LISTS.length - 1 ? `Mover para ${LISTS[i + 1][1]}` : "", "aria-label": "Mover para a próxima lista",
         onclick: () => update(b, { status: LISTS[i + 1][0] }) }, "→")));
-  // Clique fora dos controles abre a ficha lateral.
+  // Clique fora dos controles abre a ficha do livro.
   node.addEventListener("click", e => { if (!e.target.closest("button")) openSheet(b.id); });
   node.addEventListener("keydown", e => { if (e.key === "Enter" && e.target === node) openSheet(b.id); });
   node.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", String(b.id)); node.classList.add("drag"); });
