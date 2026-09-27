@@ -1,5 +1,7 @@
 # Every Last Page
 
+**MVP PUC-Rio · Every Last Page · Renan Araújo**
+
 Estante de leitura no navegador, organizada como um quadro. Três colunas: à esquerda, a busca de
 livros reais na [Open Library](https://openlibrary.org), com filtros de campo, idioma e ordem; no
 centro, o quadro da estante, com uma lista por status (Quero ler, Lendo, Lido e Abandonado); à
