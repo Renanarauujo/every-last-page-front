@@ -101,7 +101,7 @@ function renderProfile(p) {
     block("Evita", "avoid",
       disliked.length
         ? rank(disliked.map(a => [name(a), avoidText(a)]))
-        : el("p", { class: "muted" }, "Nenhum livro abandonado ou mal avaliado."),
+        : el("p", { class: "muted" }, by === "genre" ? "Nenhum tipo com mais abandonos e notas baixas do que boas notas." : "Nenhum autor com mais abandonos e notas baixas do que boas notas."),
       p.dropped_pages ? el("p", {}, `Os abandonados têm cerca de ${num(p.dropped_pages)} páginas.`) : null),
     block("Ritmo", "rhythm",
       el("div", { class: "pace" },
