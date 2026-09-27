@@ -56,6 +56,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .splitter:focus-visible { outline: 0; }
 .resizing { cursor: col-resize; user-select: none; }
 
+/* ── Barras de rolagem no tema ── */
+/* A cor do polegar vem de --sb, definida por area; coral ao passar o mouse. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sb, var(--navy-500)); border: 2px solid transparent; border-radius: 10px; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--coral); border: 2px solid transparent; background-clip: padding-box; }
+.side { --sb: var(--navy-500); }
+.board { --sb: #ffffff47; }
+.cards { --sb: #c1c7d0; }
+.panel, .sheet { --sb: #cfd5de; }
+@supports (-moz-appearance: none) {
+  * { scrollbar-width: thin; scrollbar-color: var(--sb, var(--navy-500)) transparent; }
+}
+
 /* ── Coluna 1: busca ── */
 .side { background: var(--navy-900); color: var(--light); display: flex; flex-direction: column; min-height: 0; padding: 16px; gap: 10px; }
 .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
