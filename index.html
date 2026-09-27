@@ -53,7 +53,13 @@
         <div id="ratings" class="ratings"></div>
       </section>
       <section class="profile" aria-labelledby="profile-title">
-        <h3 id="profile-title">Seu perfil de leitura</h3>
+        <div class="profile-head">
+          <h3 id="profile-title">Seu perfil de leitura</h3>
+          <div id="profile-by" class="by" role="group" aria-label="Agrupar o perfil por">
+            <button type="button" data-by="genre">Tipo</button>
+            <button type="button" data-by="author">Autor</button>
+          </div>
+        </div>
         <div id="profile"></div>
       </section>
     </aside>

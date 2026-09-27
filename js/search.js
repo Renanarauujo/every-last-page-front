@@ -2,7 +2,7 @@
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { icon } from "./icons.js";
-import { hasBook } from "./state.js";
+import { GENRE, hasBook } from "./state.js";
 import { run, show } from "./toast.js";
 
 const $ = id => document.getElementById(id);
@@ -72,6 +72,7 @@ export function renderResults(searched = false) {
       el("div", {},
         el("strong", {}, h.title),
         el("small", {}, [h.author, h.pages && `${h.pages} p.`].filter(Boolean).join(" · ")),
+        h.genre && h.genre !== "other" ? el("small", { class: "genre" }, GENRE[h.genre]) : null,
         added ? el("span", { class: "in" }, "Na estante")
           : el("button", { type: "button", class: "add", onclick: () => add(h) }, "+ Adicionar")));
   }));

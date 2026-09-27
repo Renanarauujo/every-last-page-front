@@ -1,7 +1,7 @@
 // Painel lateral com os numeros da estante.
 import { api } from "./api.js";
 import { el } from "./dom.js";
-import { state } from "./state.js";
+import { GENRE, state } from "./state.js";
 
 const MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 const RATING_MAX = 5;
@@ -61,22 +61,46 @@ function renderRatings() {
 const num = n => n.toLocaleString("pt-BR");
 const plural = (n, one, many) => `${num(n)} ${n === 1 ? one : many}`;
 
+const BY_KEY = "elp-profile-by";
+let profile = null;
+let by = loadBy();
+
+function loadBy() {
+  try {
+    return localStorage.getItem(BY_KEY) === "author" ? "author" : "genre";
+  } catch {
+    return "genre";
+  }
+}
+
+$("profile-by").addEventListener("click", e => {
+  const button = e.target.closest("[data-by]");
+  if (!button) return;
+  by = button.dataset.by;
+  try { localStorage.setItem(BY_KEY, by); } catch {}
+  if (profile) renderProfile(profile);
+});
+
 function renderProfile(p) {
+  profile = p;
+  for (const button of $("profile-by").children) button.setAttribute("aria-pressed", String(button.dataset.by === by));
   const root = $("profile");
   if (!p.books) {
     root.replaceChildren(el("p", { class: "muted" }, "Comece ou termine um livro para ver o seu perfil."));
     return;
   }
+  const liked = by === "genre" ? p.liked_genres : p.liked_authors;
+  const disliked = by === "genre" ? p.disliked_genres : p.disliked_authors;
+  const name = item => (by === "genre" ? GENRE[item.genre] : item.author);
   root.replaceChildren(
     block("Gosta", "like",
-      p.liked_authors.length
-        ? el("ul", {}, p.liked_authors.map(a => el("li", {}, el("b", {}, a.author),
-            el("span", {}, `${plural(a.books, "livro", "livros")} · ${num(a.avg_rating)}★`))))
-        : el("p", { class: "muted" }, "Dê notas aos livros para descobrir seus autores preferidos."),
+      liked.length
+        ? rank(liked.map(a => [name(a), `${plural(a.books, "livro", "livros")} · ${num(a.avg_rating)}★`]))
+        : el("p", { class: "muted" }, by === "genre" ? "Dê notas aos livros para descobrir seus tipos preferidos." : "Dê notas aos livros para descobrir seus autores preferidos."),
       p.liked_pages ? el("p", {}, `Suas melhores notas vão para livros de cerca de ${num(p.liked_pages)} páginas.`) : null),
     block("Evita", "avoid",
-      p.disliked_authors.length
-        ? el("ul", {}, p.disliked_authors.map(a => el("li", {}, el("b", {}, a.author), el("span", {}, avoidText(a)))))
+      disliked.length
+        ? rank(disliked.map(a => [name(a), avoidText(a)]))
         : el("p", { class: "muted" }, "Nenhum livro abandonado ou mal avaliado."),
       p.dropped_pages ? el("p", {}, `Os abandonados têm cerca de ${num(p.dropped_pages)} páginas.`) : null),
     block("Ritmo", "rhythm",
@@ -86,6 +110,12 @@ function renderProfile(p) {
         figure(p.pages_per_day === null ? "-" : num(Math.round(p.pages_per_day)), "páginas por dia"))),
     p.favorite ? el("p", { class: "fav" }, el("span", {}, "Favorito"), el("b", {}, p.favorite.title),
       p.favorite.author ? ` · ${p.favorite.author}` : "") : null);
+}
+
+// Ranking numerado, com ate tres posicoes.
+function rank(rows) {
+  return el("ol", { class: "rank" }, rows.map(([label, detail], i) =>
+    el("li", {}, el("span", { class: `pos p${i + 1}` }, `${i + 1}º`), el("b", {}, label), el("span", { class: "detail" }, detail))));
 }
 
 function block(title, kind, ...children) {

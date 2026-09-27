@@ -2,7 +2,7 @@
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { icon } from "./icons.js";
-import { LABEL, LISTS, state } from "./state.js";
+import { GENRES, LABEL, LISTS, state } from "./state.js";
 import { run } from "./toast.js";
 
 const $ = id => document.getElementById(id);
@@ -43,6 +43,9 @@ export function renderSheet() {
     section("Status", el("div", { class: "seg", role: "group", "aria-label": "Status" }, LISTS.map(([v, l]) =>
       el("button", { type: "button", "aria-pressed": String(v === b.status), onclick: () => v !== b.status && update(b, { status: v }) }, l)))),
     section("Nota", stars(b)),
+    section("Tipo", el("select", { class: "genre", "aria-label": "Tipo do livro", onchange: e => update(b, { genre: e.target.value }, "Tipo salvo.") },
+      !b.genre ? el("option", { value: "", selected: true, disabled: true }, "Sem tipo") : null,
+      GENRES.map(([v, l]) => el("option", { value: v, selected: v === b.genre }, l)))),
     section("Datas da leitura", dates(b)),
     section("Comentário", comment(b)),
     el("footer", { class: "sheet-foot" },
