@@ -64,7 +64,7 @@ tudo, use `docker compose down -v`.
 Cada chamada mostra o estado (carregando, sucesso ou erro). A largura das três colunas se ajusta
 arrastando os divisores entre elas, com limites para o quadro nunca ficar estreito demais; a escolha
 fica salva no navegador, e o duplo clique no divisor volta ao padrão. A interface usa as cores do ícone do
-projeto (azul-marinho, creme e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
+projeto (azul-marinho, branco e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
 (licença SIL Open Font License, em `fonts/OFL.txt`), servida pelo próprio front.
 
 ## API externa: Open Library
