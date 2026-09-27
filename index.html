@@ -13,15 +13,15 @@
     <aside class="side" aria-labelledby="search-title">
       <div class="brand"><img src="img/logo.png" alt="" width="30" height="30"><b>Every Last Page</b></div>
       <h2 id="search-title" class="sr">Buscar livros</h2>
-      <form id="search-form" class="search-row" novalidate>
+      <form id="search-form" class="search-form" novalidate>
         <input id="search-q" type="search" placeholder="Título, autor ou ISBN" aria-label="Termo da busca" minlength="2" maxlength="100" autocomplete="off">
+        <div class="qf">
+          <select id="search-field" aria-label="Buscar em"><option value="all">Tudo</option><option value="title">Título</option><option value="author">Autor</option><option value="isbn">ISBN</option></select>
+          <select id="search-language" aria-label="Idioma"><option value="any">Idioma</option><option value="por">Português</option><option value="eng">Inglês</option><option value="spa">Espanhol</option><option value="fre">Francês</option></select>
+          <select id="search-sort" aria-label="Ordem"><option value="relevance">Relevância</option><option value="new">Mais recentes</option><option value="old">Mais antigos</option></select>
+        </div>
         <button id="search-btn" type="submit" class="search-btn"></button>
       </form>
-      <div class="qf">
-        <select id="search-field" aria-label="Buscar em"><option value="all">Tudo</option><option value="title">Título</option><option value="author">Autor</option><option value="isbn">ISBN</option></select>
-        <select id="search-language" aria-label="Idioma"><option value="any">Idioma</option><option value="por">Português</option><option value="eng">Inglês</option><option value="spa">Espanhol</option><option value="fre">Francês</option></select>
-        <select id="search-sort" aria-label="Ordem"><option value="relevance">Relevância</option><option value="new">Mais recentes</option><option value="old">Mais antigos</option></select>
-      </div>
       <p id="results-info" class="info"></p>
       <ul id="results" class="results"></ul>
     </aside>

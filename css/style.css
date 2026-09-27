@@ -75,10 +75,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .brand img { border-radius: 50%; }
 .brand b { font-size: 16px; font-weight: 600; }
-.search-row { display: flex; gap: 6px; }
-.side input { flex: 1; min-width: 0; width: 100%; background: var(--navy-700); border: 1px solid var(--navy-500); border-radius: 8px; padding: 10px 12px; color: var(--light); }
+.search-form { display: flex; flex-direction: column; gap: 8px; }
+.side input { width: 100%; background: var(--navy-700); border: 1px solid var(--navy-500); border-radius: 8px; padding: 10px 12px; color: var(--light); }
 .side input::placeholder { color: #8ea0bb; }
-.search-btn { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 8px; background: var(--coral); color: var(--navy-900); padding: 0 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.search-btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 8px; background: var(--coral); color: var(--navy-900); padding: 9px 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
 .search-btn .ic svg { width: 15px; height: 15px; }
 .search-btn:hover { background: var(--coral-dark); color: #fff; }
 .side input:focus { outline: 0; border-color: var(--coral); box-shadow: 0 0 0 3px #f8603f40; }
