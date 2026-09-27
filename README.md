@@ -60,6 +60,7 @@ tudo, use `docker compose down -v`.
 | Abrir o cartão na ficha do livro (janela): trocar o status, dar nota, editar as datas de início e conclusão e escrever o comentário | `PUT /shelf/{id}` |
 | Remover da estante pelo × do cartão ou pela ficha | `DELETE /shelf/{id}` |
 | Painel: contagem por status, páginas lidas, nota média, livros lidos por mês e distribuição das notas | `GET /shelf/summary` |
+| Perfil de leitura: autores de que gosta e que evita, tamanho dos livros, ritmo e favorito | `GET /shelf/insights` |
 
 A busca roda pelo botão Pesquisar ou pelo Enter, cancela a busca anterior ainda em andamento e
 guarda os resultados já vistos, para não repetir chamadas. Cada chamada mostra o estado

@@ -17,6 +17,9 @@ export async function loadPanel() {
   renderStats(d);
   renderMonths(d.by_month);
   renderRatings();
+  try {
+    renderProfile(await api.insights());
+  } catch {}
 }
 
 function renderStats(d) {
@@ -52,4 +55,50 @@ function renderRatings() {
     bar.style.width = `${(counts[i] / max) * 100}%`;
     return el("div", { class: "rrow" }, el("span", {}, `${i + 1}★`), el("div", { class: "track" }, bar), el("b", {}, counts[i]));
   }));
+}
+
+// ── Perfil de leitura ──
+const num = n => n.toLocaleString("pt-BR");
+const plural = (n, one, many) => `${num(n)} ${n === 1 ? one : many}`;
+
+function renderProfile(p) {
+  const root = $("profile");
+  if (!p.books) {
+    root.replaceChildren(el("p", { class: "muted" }, "Comece ou termine um livro para ver o seu perfil."));
+    return;
+  }
+  root.replaceChildren(
+    block("Gosta", "like",
+      p.liked_authors.length
+        ? el("ul", {}, p.liked_authors.map(a => el("li", {}, el("b", {}, a.author),
+            el("span", {}, `${plural(a.books, "livro", "livros")} · ${num(a.avg_rating)}★`))))
+        : el("p", { class: "muted" }, "Dê notas aos livros para descobrir seus autores preferidos."),
+      p.liked_pages ? el("p", {}, `Suas melhores notas vão para livros de cerca de ${num(p.liked_pages)} páginas.`) : null),
+    block("Evita", "avoid",
+      p.disliked_authors.length
+        ? el("ul", {}, p.disliked_authors.map(a => el("li", {}, el("b", {}, a.author), el("span", {}, avoidText(a)))))
+        : el("p", { class: "muted" }, "Nenhum livro abandonado ou mal avaliado."),
+      p.dropped_pages ? el("p", {}, `Os abandonados têm cerca de ${num(p.dropped_pages)} páginas.`) : null),
+    block("Ritmo", "rhythm",
+      el("div", { class: "pace" },
+        figure(p.completion_rate === null ? "-" : `${p.completion_rate}%`, "do que começa, termina"),
+        figure(p.avg_days === null ? "-" : num(p.avg_days), "dias por livro"),
+        figure(p.pages_per_day === null ? "-" : num(Math.round(p.pages_per_day)), "páginas por dia"))),
+    p.favorite ? el("p", { class: "fav" }, el("span", {}, "Favorito"), el("b", {}, p.favorite.title),
+      p.favorite.author ? ` · ${p.favorite.author}` : "") : null);
+}
+
+function block(title, kind, ...children) {
+  return el("div", { class: `pblock ${kind}` }, el("h4", {}, title), ...children);
+}
+
+function figure(value, label) {
+  return el("div", {}, el("b", {}, value), el("span", {}, label));
+}
+
+function avoidText(a) {
+  const parts = [];
+  if (a.dropped) parts.push(plural(a.dropped, "abandonado", "abandonados"));
+  if (a.low_rated) parts.push(plural(a.low_rated, "nota baixa", "notas baixas"));
+  return parts.join(" · ");
 }

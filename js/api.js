@@ -37,4 +37,5 @@ export const api = {
   update: (id, data) => request(`/shelf/${id}`, { method: "PUT", body: JSON.stringify(data) }),
   remove: id => request(`/shelf/${id}`, { method: "DELETE" }),
   summary: () => request("/shelf/summary"),
+  insights: () => request("/shelf/insights"),
 };
