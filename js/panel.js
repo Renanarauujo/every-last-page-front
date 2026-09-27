@@ -37,7 +37,8 @@ function renderMonths(months) {
   $("months").replaceChildren(...months.map(m => {
     const bar = el("i", { class: m.books ? "" : "zero" });
     bar.style.height = `${m.books ? (m.books / max) * 100 : 3}%`;
-    return el("div", { class: "col", title: `${m.books} livro(s)` },
+    const now = m === months[months.length - 1];
+    return el("div", { class: `col${now ? " now" : ""}`, title: `${m.books} livro(s)` },
       el("span", { class: "value" }, m.books || ""), bar, el("span", { class: "month" }, MONTHS[Number(m.month.slice(5)) - 1]));
   }));
 }
