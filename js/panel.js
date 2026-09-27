@@ -35,11 +35,13 @@ function renderChart(months) {
     ...months.map(m => {
       const [year, month] = m.month.split("-");
       const label = MONTHS[Number(month) - 1];
+      const bar = el("div", { class: "bar" });
+      bar.style.height = `${(m.books / max) * 100}%`;
       return el(
         "div",
         { class: "col", title: `${label}/${year}: ${m.books} livro(s)` },
         el("span", { class: "value" }, m.books || ""),
-        el("div", { class: "bar", style: `height:${(m.books / max) * 100}%` }),
+        bar,
         el("span", { class: "month" }, label),
       );
     }),

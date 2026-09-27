@@ -1,0 +1,23 @@
+services:
+  api:
+    build: ../every-last-page-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:////data/shelf.db
+      CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    volumes:
+      - shelf-data:/data
+    restart: unless-stopped
+
+  front:
+    build: .
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  shelf-data:
