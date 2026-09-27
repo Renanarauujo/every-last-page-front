@@ -9,80 +9,48 @@
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
-  <header class="top">
-    <img class="logo" src="img/logo.png" alt="" width="36" height="36">
-    <h1>Every Last Page</h1>
-    <p>Estante de leitura</p>
-  </header>
-
-  <main class="layout">
-    <section class="col search-col" aria-labelledby="search-title">
-      <h2 id="search-title">Buscar livros</h2>
-      <form id="search-form" class="search-form">
-        <div class="bar">
-          <input id="search-q" type="search" placeholder="Título, autor ou ISBN" aria-label="Termo da busca" minlength="2" maxlength="100" autocomplete="off">
-          <button type="submit">Buscar</button>
-        </div>
-        <div class="filters">
-          <label>Buscar em
-            <select id="search-field">
-              <option value="all">Tudo</option>
-              <option value="title">Título</option>
-              <option value="author">Autor</option>
-              <option value="isbn">ISBN</option>
-            </select>
-          </label>
-          <label>Idioma
-            <select id="search-language">
-              <option value="any">Qualquer</option>
-              <option value="por">Português</option>
-              <option value="eng">Inglês</option>
-              <option value="spa">Espanhol</option>
-              <option value="fre">Francês</option>
-            </select>
-          </label>
-          <label>Ordenar
-            <select id="search-sort">
-              <option value="relevance">Relevância</option>
-              <option value="new">Mais recentes</option>
-              <option value="old">Mais antigos</option>
-            </select>
-          </label>
-        </div>
+  <div class="layout">
+    <aside class="side" aria-labelledby="search-title">
+      <div class="brand"><img src="img/logo.png" alt="" width="30" height="30"><b>Every Last Page</b></div>
+      <h2 id="search-title" class="sr">Buscar livros</h2>
+      <form id="search-form">
+        <input id="search-q" type="search" placeholder="Buscar título, autor ou ISBN" aria-label="Termo da busca" minlength="2" maxlength="100" autocomplete="off">
       </form>
+      <div class="qf">
+        <select id="search-field" aria-label="Buscar em"><option value="all">Tudo</option><option value="title">Título</option><option value="author">Autor</option><option value="isbn">ISBN</option></select>
+        <select id="search-language" aria-label="Idioma"><option value="any">Idioma</option><option value="por">Português</option><option value="eng">Inglês</option><option value="spa">Espanhol</option><option value="fre">Francês</option></select>
+        <select id="search-sort" aria-label="Ordem"><option value="relevance">Relevância</option><option value="new">Mais recentes</option><option value="old">Mais antigos</option></select>
+      </div>
       <p id="results-info" class="info"></p>
       <ul id="results" class="results"></ul>
-    </section>
+    </aside>
 
-    <section class="col shelf-col" aria-label="Estante e painel">
-      <section class="shelf-box" aria-labelledby="shelf-title">
-        <div class="head">
-          <h2 id="shelf-title">Minha estante</h2>
-          <select id="shelf-order" aria-label="Ordenar a estante">
-            <option value="recent">Mais recentes</option>
-            <option value="oldest">Mais antigos</option>
-            <option value="title">Título</option>
-            <option value="rating">Nota</option>
-          </select>
-        </div>
-        <div id="shelf-tabs" class="tabs" role="tablist" aria-label="Filtrar por status"></div>
-        <input id="shelf-filter" class="filter" type="search" placeholder="Filtrar por título ou autor" aria-label="Filtrar a estante" autocomplete="off">
-        <div id="shelf" class="shelf"></div>
+    <main class="board-wrap">
+      <div class="board-head">
+        <h1>Minha estante</h1>
+        <input id="shelf-filter" type="search" placeholder="Filtrar por título ou autor" aria-label="Filtrar a estante" autocomplete="off">
+        <select id="shelf-order" aria-label="Ordenar a estante">
+          <option value="recent">Mais recentes</option><option value="oldest">Mais antigos</option><option value="title">Título</option><option value="rating">Nota</option>
+        </select>
+      </div>
+      <div id="board" class="board"></div>
+    </main>
+
+    <aside class="panel" aria-labelledby="panel-title">
+      <h2 id="panel-title">Painel</h2>
+      <dl id="stats" class="stats"></dl>
+      <section>
+        <h3>Livros lidos por mês</h3>
+        <div id="months" class="chart"></div>
       </section>
-
-      <section class="panel" aria-labelledby="panel-title">
-        <h2 id="panel-title">Painel</h2>
-        <div class="panel-body">
-          <div id="stats" class="stats"></div>
-          <div class="chart-box">
-            <h3>Livros lidos por mês</h3>
-            <div id="chart" class="chart"></div>
-          </div>
-        </div>
+      <section>
+        <h3>Notas dadas</h3>
+        <div id="ratings" class="ratings"></div>
       </section>
-    </section>
-  </main>
+    </aside>
+  </div>
 
+  <dialog id="detail" class="detail" aria-labelledby="detail-title"></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

@@ -1,33 +1,28 @@
 // Busca na Open Library, com filtros, e adicao a estante.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
+import { hasBook } from "./state.js";
 import { run, show } from "./toast.js";
-import { hasBook, refresh } from "./shelf.js";
 
+const $ = id => document.getElementById(id);
 let hits = [];
+let onAdd = async () => {};
 
-export function initSearch() {
-  const form = document.getElementById("search-form");
-  form.addEventListener("submit", e => {
+export function initSearch(afterAdd) {
+  onAdd = afterAdd;
+  $("search-form").addEventListener("submit", e => {
     e.preventDefault();
     search();
   });
   for (const id of ["search-field", "search-language", "search-sort"]) {
-    document.getElementById(id).addEventListener("change", () => {
-      if (document.getElementById("search-q").value.trim().length >= 2) search();
-    });
+    $(id).addEventListener("change", () => $("search-q").value.trim().length >= 2 && search());
   }
-  renderResults();
 }
 
 async function search() {
-  const q = document.getElementById("search-q").value.trim();
+  const q = $("search-q").value.trim();
   if (q.length < 2) return show("Digite ao menos 2 caracteres.", "error");
-  const filters = {
-    field: document.getElementById("search-field").value,
-    language: document.getElementById("search-language").value,
-    sort: document.getElementById("search-sort").value,
-  };
+  const filters = { field: $("search-field").value, language: $("search-language").value, sort: $("search-sort").value };
   const res = await run(() => api.search(q, filters), { loading: "Buscando na Open Library..." });
   if (!res) return;
   hits = res;
@@ -35,38 +30,20 @@ async function search() {
 }
 
 export function renderResults(searched = false) {
-  const info = document.getElementById("results-info");
-  const list = document.getElementById("results");
-  if (searched || hits.length) {
-    info.textContent = hits.length ? `${hits.length} resultado(s)` : "Nenhum livro encontrado.";
-  } else {
-    info.textContent = "Busque um livro para adicionar à estante.";
-  }
-  list.replaceChildren(...hits.map(item));
-}
-
-function item(hit) {
-  const added = hasBook(hit.ol_key);
-  return el(
-    "li",
-    { class: "hit" },
-    cover(hit.cover_id, "M"),
-    el(
-      "div",
-      { class: "info" },
-      el("strong", {}, hit.title),
-      el("span", {}, hit.author || "Autor desconhecido"),
-      hit.pages ? el("span", {}, `${hit.pages} páginas`) : null,
-    ),
-    el(
-      "button",
-      { type: "button", disabled: added, onclick: () => add(hit) },
-      added ? "Na estante" : "Adicionar",
-    ),
-  );
+  $("results-info").textContent = hits.length ? `${hits.length} resultado(s)` : searched ? "Nenhum livro encontrado." : "";
+  $("results").replaceChildren(...hits.map(h => {
+    const added = hasBook(h.ol_key);
+    return el("li", { class: "row" },
+      cover(h.cover_id, "S"),
+      el("div", {},
+        el("strong", {}, h.title),
+        el("small", {}, [h.author, h.pages && `${h.pages} p.`].filter(Boolean).join(" · ")),
+        added ? el("span", { class: "in" }, "Na estante")
+          : el("button", { type: "button", class: "add", onclick: () => add(h) }, "+ Adicionar")));
+  }));
 }
 
 async function add(hit) {
-  const book = await run(() => api.add(hit), { loading: "Adicionando...", done: "Livro adicionado." });
-  if (book) await refresh();
+  const book = await run(() => api.add(hit), { loading: "Adicionando...", done: "Livro adicionado em Quero ler." });
+  if (book) await onAdd();
 }

@@ -1,9 +1,9 @@
 # Every Last Page
 
-Estante de leitura no navegador. À esquerda, a busca de livros reais na
-[Open Library](https://openlibrary.org), com filtros de campo, idioma e ordenação. À direita, a
-estante pessoal, com filtros por status e texto, e abaixo dela um painel com os números da
-leitura. Cada livro tem status, nota de 1 a 5 e um comentário.
+Estante de leitura no navegador, organizada como um quadro. Três colunas: à esquerda, a busca de
+livros reais na [Open Library](https://openlibrary.org), com filtros de campo, idioma e ordem; no
+centro, o quadro da estante, com uma lista por status (Quero ler, Lendo, Lido e Abandonado); à
+direita, o painel com os números da leitura. Cada livro tem status, nota de 1 a 5 e um comentário.
 
 Este é o repositório principal. A API própria está em
 [every-last-page-api](https://github.com/Renanarauujo/every-last-page-api).
@@ -55,10 +55,10 @@ tudo, use `docker compose down -v`.
 |---|---|
 | Buscar livros, filtrando por campo (título, autor, ISBN), idioma e ordem | `GET /books/search?q=&field=&language=&sort=` |
 | Adicionar à estante | `POST /shelf` |
-| Mostrar a estante agrupada em Lendo, Quero ler, Lido e Abandonado, com abas por status, filtro por texto e ordenação | `GET /shelf?order=` |
-| Marcar lido pelo tick, trocar o status, dar nota de 1 a 5, comentar | `PUT /shelf/{id}` |
-| Remover da estante | `DELETE /shelf/{id}` |
-| Painel: contagem por status, páginas lidas, nota média e livros lidos por mês | `GET /shelf/summary` |
+| Mostrar o quadro com as listas Quero ler, Lendo, Lido e Abandonado, com filtro por texto e ordenação | `GET /shelf?order=` |
+| Arrastar o cartão para outra lista, ou abrir a ficha do livro e trocar o status, dar nota de 1 a 5 e comentar | `PUT /shelf/{id}` |
+| Remover da estante, pela ficha do livro | `DELETE /shelf/{id}` |
+| Painel: contagem por status, páginas lidas, nota média, livros lidos por mês e distribuição das notas | `GET /shelf/summary` |
 
 Cada chamada mostra o estado (carregando, sucesso ou erro). A interface usa as cores do ícone do
 projeto (azul-marinho, creme e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
@@ -95,8 +95,10 @@ js/config.js        endereço da API
 js/api.js           chamadas à API
 js/dom.js           criação de elementos sem innerHTML
 js/toast.js         mensagens de carregando, sucesso e erro
-js/search.js        busca e adição
-js/shelf.js         estante agrupada por status
+js/state.js         estado da estante e nomes dos status
+js/icons.js         ícones em SVG dos cartões
+js/search.js        busca com filtros e adição
+js/board.js         quadro, cartões, arrastar e soltar e ficha do livro
 js/panel.js         painel
 img/logo.png        ícone do projeto
 fonts/              fonte Rubik (woff2) e licença
