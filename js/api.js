@@ -1,7 +1,7 @@
 // Chamadas a API da estante.
 import { API_URL } from "./config.js";
 
-const SEARCH_LIMIT = 10;
+const SEARCH_LIMIT = 20;
 
 async function request(path, options = {}) {
   let res;
@@ -27,9 +27,11 @@ function errorText(status, body) {
   return `Erro ${status} na API.`;
 }
 
+const query = params => new URLSearchParams(params).toString();
+
 export const api = {
-  search: q => request(`/books/search?q=${encodeURIComponent(q)}&limit=${SEARCH_LIMIT}`),
-  list: () => request("/shelf"),
+  search: (q, filters = {}) => request(`/books/search?${query({ q, limit: SEARCH_LIMIT, ...filters })}`),
+  list: (order = "recent") => request(`/shelf?${query({ order })}`),
   add: book => request("/shelf", { method: "POST", body: JSON.stringify(book) }),
   update: (id, data) => request(`/shelf/${id}`, { method: "PUT", body: JSON.stringify(data) }),
   remove: id => request(`/shelf/${id}`, { method: "DELETE" }),

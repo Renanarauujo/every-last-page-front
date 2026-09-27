@@ -1,9 +1,9 @@
 # Every Last Page
 
-Ambiente de leitura no navegador. À esquerda, um player do YouTube para tocar uma música ou um
-ambiente enquanto se lê, e um painel com os números da leitura. À direita, a estante pessoal:
-busca livros reais na [Open Library](https://openlibrary.org), adiciona à estante e registra o
-status, a nota e um comentário de cada livro.
+Estante de leitura no navegador. À esquerda, a busca de livros reais na
+[Open Library](https://openlibrary.org), com filtros de campo, idioma e ordenação. À direita, a
+estante pessoal, com filtros por status e texto, e abaixo dela um painel com os números da
+leitura. Cada livro tem status, nota de 1 a 5 e um comentário.
 
 Este é o repositório principal. A API própria está em
 [every-last-page-api](https://github.com/Renanarauujo/every-last-page-api).
@@ -53,16 +53,16 @@ tudo, use `docker compose down -v`.
 
 | Ação | Chamada à API |
 |---|---|
-| Buscar livros | `GET /books/search?q=` |
+| Buscar livros, filtrando por campo (título, autor, ISBN), idioma e ordem | `GET /books/search?q=&field=&language=&sort=` |
 | Adicionar à estante | `POST /shelf` |
-| Mostrar a estante agrupada em Lendo, Quero ler, Lido e Abandonado | `GET /shelf` |
+| Mostrar a estante agrupada em Lendo, Quero ler, Lido e Abandonado, com abas por status, filtro por texto e ordenação | `GET /shelf?order=` |
 | Marcar lido pelo tick, trocar o status, dar nota de 1 a 5, comentar | `PUT /shelf/{id}` |
 | Remover da estante | `DELETE /shelf/{id}` |
 | Painel: contagem por status, páginas lidas, nota média e livros lidos por mês | `GET /shelf/summary` |
 
-Cada chamada mostra o estado (carregando, sucesso ou erro). O player aceita links do YouTube
-(`youtube.com/watch`, `youtu.be`, `shorts`), extrai apenas o id do vídeo e o incorpora pelo
-domínio `youtube-nocookie.com`.
+Cada chamada mostra o estado (carregando, sucesso ou erro). A interface usa as cores do ícone do
+projeto (azul-marinho, creme e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
+(licença SIL Open Font License, em `fonts/OFL.txt`), servida pelo próprio front.
 
 ## API externa: Open Library
 
@@ -98,7 +98,8 @@ js/toast.js         mensagens de carregando, sucesso e erro
 js/search.js        busca e adição
 js/shelf.js         estante agrupada por status
 js/panel.js         painel
-js/player.js        player do YouTube
+img/logo.png        ícone do projeto
+fonts/              fonte Rubik (woff2) e licença
 nginx.conf          servidor e headers de segurança
 Dockerfile          imagem do front (nginx)
 docker-compose.yml  front + API + volume do banco
@@ -108,7 +109,7 @@ docs/               fluxograma e captura de tela
 ## Segurança
 
 - Todo dado externo entra na página com `textContent`, nunca com `innerHTML`.
-- A URL da capa é montada a partir de um número; o id do vídeo aceita só 11 caracteres permitidos.
+- A URL da capa é montada a partir de um número vindo da API.
 - O nginx envia `Content-Security-Policy` restrita às origens usadas, `X-Frame-Options`,
   `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`.
 - A API aceita chamadas apenas da origem do front (CORS por lista).

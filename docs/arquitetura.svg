@@ -43,12 +43,6 @@
   <text x="880" y="350" text-anchor="middle" font-size="13" fill="#555">API externa</text>
   <text x="880" y="368" text-anchor="middle" font-size="13" fill="#555">/search.json</text>
 
-  <!-- YouTube -->
-  <rect x="790" y="120" width="180" height="110" rx="12" fill="#f4f4f2" stroke="#888" stroke-width="2"/>
-  <text x="880" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">YouTube</text>
-  <text x="880" y="180" text-anchor="middle" font-size="13" fill="#555">youtube-nocookie.com</text>
-  <text x="880" y="198" text-anchor="middle" font-size="13" fill="#555">(player embutido)</text>
-
   <!-- Capas -->
   <rect x="790" y="450" width="180" height="70" rx="12" fill="#f1eaf8" stroke="#7b4fa3" stroke-width="2"/>
   <text x="880" y="480" text-anchor="middle" font-size="15" font-weight="700" fill="#1d1d1b">Capas</text>
@@ -68,8 +62,6 @@
   <path d="M490,300 C600,250 700,270 788,330" fill="none" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
   <text class="l" x="640" y="258" font-size="12" fill="#333">HTTPS: busca</text>
 
-  <path d="M115,215 C115,120 500,60 788,165" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
-  <text class="l" x="520" y="66" font-size="12" fill="#666">iframe do vídeo</text>
 
   <path d="M115,325 C115,520 500,540 788,485" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
   <text class="l" x="440" y="545" font-size="12" fill="#666">imagens das capas</text>

@@ -1,8 +1,7 @@
 // Inicializacao da pagina.
-import { initPlayer } from "./player.js";
 import { initSearch } from "./search.js";
-import { refresh } from "./shelf.js";
+import { initShelf, refresh } from "./shelf.js";
 
-initPlayer();
 initSearch();
+initShelf();
 refresh();

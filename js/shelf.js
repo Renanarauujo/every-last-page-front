@@ -1,4 +1,4 @@
-// Estante agrupada por status.
+// Estante com filtro por status, texto e ordenacao.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { run } from "./toast.js";
@@ -15,14 +15,27 @@ const LABELS = Object.fromEntries(GROUPS);
 const RATING_MAX = 5;
 
 let books = [];
+let tab = "all";
 
 export function hasBook(olKey) {
   return books.some(b => b.ol_key === olKey);
 }
 
+export function initShelf() {
+  document.getElementById("shelf-order").addEventListener("change", refresh);
+  document.getElementById("shelf-filter").addEventListener("input", render);
+  document.getElementById("shelf-tabs").addEventListener("click", e => {
+    const button = e.target.closest("[data-tab]");
+    if (!button) return;
+    tab = button.dataset.tab;
+    render();
+  });
+}
+
 // Recarrega estante, painel e resultados da busca.
 export async function refresh() {
-  const list = await run(() => api.list());
+  const order = document.getElementById("shelf-order").value;
+  const list = await run(() => api.list(order));
   if (list) books = list;
   render();
   renderResults();
@@ -30,28 +43,57 @@ export async function refresh() {
 }
 
 function render() {
+  renderTabs();
   const root = document.getElementById("shelf");
   if (!books.length) {
-    root.replaceChildren(el("p", { class: "empty" }, "A estante está vazia. Busque um livro para começar."));
+    root.replaceChildren(el("p", { class: "empty" }, "A estante está vazia. Busque um livro à esquerda para começar."));
     return;
   }
+  const text = document.getElementById("shelf-filter").value.trim().toLowerCase();
+  const visible = books.filter(b => matches(b, text));
+  if (tab !== "all") {
+    const list = visible.filter(b => b.status === tab);
+    root.replaceChildren(list.length ? el("ul", { class: "cards" }, list.map(card)) : none());
+    return;
+  }
+  const groups = GROUPS.map(([status, label]) => [status, label, visible.filter(b => b.status === status)])
+    .filter(([, , list]) => list.length);
   root.replaceChildren(
-    ...GROUPS.map(([status, label]) => {
-      const group = books.filter(b => b.status === status);
-      return el(
-        "section",
-        { class: `group ${status}` },
-        el("h2", {}, label, el("span", { class: "count" }, group.length)),
-        group.length ? el("ul", {}, group.map(card)) : el("p", { class: "none" }, "Nenhum livro."),
-      );
-    }),
+    ...(groups.length
+      ? groups.map(([status, label, list]) =>
+          el("section", { class: `group ${status}` }, el("h3", {}, label, el("span", { class: "count" }, list.length)), el("ul", { class: "cards" }, list.map(card))),
+        )
+      : [none()]),
   );
+}
+
+function renderTabs() {
+  const count = status => (status === "all" ? books.length : books.filter(b => b.status === status).length);
+  document.getElementById("shelf-tabs").replaceChildren(
+    ...[["all", "Todos"], ...GROUPS].map(([value, label]) =>
+      el(
+        "button",
+        { type: "button", role: "tab", class: `tab ${value}`, "data-tab": value, "aria-selected": String(tab === value) },
+        label,
+        el("span", { class: "count" }, count(value)),
+      ),
+    ),
+  );
+}
+
+function matches(b, text) {
+  if (!text) return true;
+  return `${b.title} ${b.author || ""}`.toLowerCase().includes(text);
+}
+
+function none() {
+  return el("p", { class: "empty" }, "Nenhum livro neste filtro.");
 }
 
 function card(b) {
   return el(
     "li",
-    { class: "card" },
+    { class: `card ${b.status}` },
     el("input", {
       type: "checkbox",
       class: "tick",
