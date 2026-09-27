@@ -1,7 +1,114 @@
-# every-last-page-front
+# Every Last Page
 
-Ambiente de leitura do Every Last Page: player do YouTube, painel de leitura e a estante
-agrupada por status, em HTML, CSS e JavaScript puro. Consome a API `every-last-page-api`.
+Ambiente de leitura no navegador. À esquerda, um player do YouTube para tocar uma música ou um
+ambiente enquanto se lê, e um painel com os números da leitura. À direita, a estante pessoal:
+busca livros reais na [Open Library](https://openlibrary.org), adiciona à estante e registra o
+status, a nota e um comentário de cada livro.
 
-Em construcao. Fluxograma da arquitetura, instalacao e a secao da Open Library entram ao longo
-do projeto.
+Este é o repositório principal. A API própria está em
+[every-last-page-api](https://github.com/Renanarauujo/every-last-page-api).
+
+![Tela do Every Last Page](docs/tela.png)
+
+## Arquitetura
+
+![Fluxograma da arquitetura](docs/arquitetura.png)
+
+| Componente | Tecnologia | Papel |
+|---|---|---|
+| Front (este repositório) | HTML, CSS e JavaScript puro, servido por nginx | Interface; chama a API por REST/JSON |
+| API própria | Python, FastAPI, SQLAlchemy | CRUD da estante, regras de status e busca na Open Library |
+| Banco | SQLite em volume Docker | Guarda a estante entre reinícios |
+| API externa | Open Library | Catálogo de livros e capas |
+
+O front nunca chama a Open Library para buscar livros: a API própria faz a busca e devolve os
+dados tratados. O navegador carrega da Open Library só as imagens das capas.
+
+## Como executar
+
+Pré-requisitos: [Git](https://git-scm.com) e [Docker](https://www.docker.com) com Docker Compose.
+
+1. Clone os dois repositórios na mesma pasta:
+
+   ```bash
+   git clone https://github.com/Renanarauujo/every-last-page-api
+   git clone https://github.com/Renanarauujo/every-last-page-front
+   ```
+
+2. Suba tudo a partir da pasta do front:
+
+   ```bash
+   cd every-last-page-front
+   docker compose up --build
+   ```
+
+3. Abra:
+   - Aplicação: http://localhost:8080
+   - API e Swagger: http://localhost:8000/docs
+
+A estante fica no volume `shelf-data` e continua lá depois de `docker compose down`. Para apagar
+tudo, use `docker compose down -v`.
+
+## O que a tela faz
+
+| Ação | Chamada à API |
+|---|---|
+| Buscar livros | `GET /books/search?q=` |
+| Adicionar à estante | `POST /shelf` |
+| Mostrar a estante agrupada em Lendo, Quero ler, Lido e Abandonado | `GET /shelf` |
+| Marcar lido pelo tick, trocar o status, dar nota de 1 a 5, comentar | `PUT /shelf/{id}` |
+| Remover da estante | `DELETE /shelf/{id}` |
+| Painel: contagem por status, páginas lidas, nota média e livros lidos por mês | `GET /shelf/summary` |
+
+Cada chamada mostra o estado (carregando, sucesso ou erro). O player aceita links do YouTube
+(`youtube.com/watch`, `youtu.be`, `shorts`), extrai apenas o id do vídeo e o incorpora pelo
+domínio `youtube-nocookie.com`.
+
+## API externa: Open Library
+
+A [Open Library](https://openlibrary.org) é um catálogo aberto de livros mantido pelo
+Internet Archive.
+
+- **Licença:** o Internet Archive não reivindica direitos autorais sobre os dados do catálogo
+  ([licensing](https://openlibrary.org/developers/licensing)). O projeto usa os dados apenas para
+  exibição e guarda uma cópia de título, autor, páginas e id da capa dos livros adicionados.
+- **Cadastro:** não é necessário. A API é gratuita e não exige chave; o projeto se identifica
+  pelo cabeçalho `User-Agent`, como a [documentação](https://openlibrary.org/developers/api)
+  recomenda.
+- **Limites:** a documentação indica até 1 requisição por segundo sem identificação. A API
+  própria limita a 20 buscas por minuto por IP.
+
+Rotas usadas:
+
+| Rota | Uso |
+|---|---|
+| `GET https://openlibrary.org/search.json?q=&limit=&fields=key,title,author_name,number_of_pages_median,cover_i` | [Search API](https://openlibrary.org/dev/docs/api/search): busca de livros, chamada pela API própria |
+| `GET https://covers.openlibrary.org/b/id/{cover_id}-{S,M}.jpg` | [Covers API](https://openlibrary.org/dev/docs/api/covers): imagem da capa, carregada pelo navegador |
+
+## Estrutura
+
+```
+index.html          estrutura da página
+css/style.css       tema e layout
+js/main.js          inicialização
+js/config.js        endereço da API
+js/api.js           chamadas à API
+js/dom.js           criação de elementos sem innerHTML
+js/toast.js         mensagens de carregando, sucesso e erro
+js/search.js        busca e adição
+js/shelf.js         estante agrupada por status
+js/panel.js         painel
+js/player.js        player do YouTube
+nginx.conf          servidor e headers de segurança
+Dockerfile          imagem do front (nginx)
+docker-compose.yml  front + API + volume do banco
+docs/               fluxograma e captura de tela
+```
+
+## Segurança
+
+- Todo dado externo entra na página com `textContent`, nunca com `innerHTML`.
+- A URL da capa é montada a partir de um número; o id do vídeo aceita só 11 caracteres permitidos.
+- O nginx envia `Content-Security-Policy` restrita às origens usadas, `X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy`.
+- A API aceita chamadas apenas da origem do front (CORS por lista).

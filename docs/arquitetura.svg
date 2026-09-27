@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <style>.l{paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}</style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="560" fill="#ffffff"/>
+  <text x="500" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1b">Every Last Page - arquitetura</text>
+
+  <!-- Usuario -->
+  <rect x="30" y="215" width="170" height="110" rx="12" fill="#eef2f8" stroke="#2d5fa8" stroke-width="2"/>
+  <text x="115" y="255" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">Navegador</text>
+  <text x="115" y="278" text-anchor="middle" font-size="13" fill="#555">HTML, CSS e JS</text>
+  <text x="115" y="296" text-anchor="middle" font-size="13" fill="#555">(usuário)</text>
+
+  <!-- Docker compose -->
+  <rect x="260" y="70" width="470" height="450" rx="16" fill="#fafaf8" stroke="#999" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <text x="280" y="96" font-size="14" font-weight="700" fill="#555">docker compose</text>
+
+  <!-- Front -->
+  <rect x="300" y="120" width="190" height="110" rx="12" fill="#fdf3e6" stroke="#b86b12" stroke-width="2"/>
+  <text x="395" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">front</text>
+  <text x="395" y="180" text-anchor="middle" font-size="13" fill="#555">nginx</text>
+  <text x="395" y="198" text-anchor="middle" font-size="13" fill="#555">porta 8080</text>
+
+  <!-- API -->
+  <rect x="300" y="290" width="190" height="130" rx="12" fill="#e6f2ec" stroke="#2f7d5b" stroke-width="2"/>
+  <text x="395" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">api</text>
+  <text x="395" y="350" text-anchor="middle" font-size="13" fill="#555">FastAPI + SQLAlchemy</text>
+  <text x="395" y="368" text-anchor="middle" font-size="13" fill="#555">porta 8000</text>
+  <text x="395" y="386" text-anchor="middle" font-size="13" fill="#555">/health · /books · /shelf</text>
+
+  <!-- SQLite -->
+  <path d="M560,320 a60,14 0 0,0 120,0 v70 a60,14 0 0,1 -120,0 z" fill="#e6f2ec" stroke="#2f7d5b" stroke-width="2"/>
+  <ellipse cx="620" cy="320" rx="60" ry="14" fill="#f3faf6" stroke="#2f7d5b" stroke-width="2"/>
+  <text x="620" y="360" text-anchor="middle" font-size="15" font-weight="700" fill="#1d1d1b">SQLite</text>
+  <text x="620" y="380" text-anchor="middle" font-size="12" fill="#555">volume /data</text>
+
+  <!-- Open Library -->
+  <rect x="790" y="290" width="180" height="130" rx="12" fill="#f1eaf8" stroke="#7b4fa3" stroke-width="2"/>
+  <text x="880" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">Open Library</text>
+  <text x="880" y="350" text-anchor="middle" font-size="13" fill="#555">API externa</text>
+  <text x="880" y="368" text-anchor="middle" font-size="13" fill="#555">/search.json</text>
+
+  <!-- YouTube -->
+  <rect x="790" y="120" width="180" height="110" rx="12" fill="#f4f4f2" stroke="#888" stroke-width="2"/>
+  <text x="880" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1d1b">YouTube</text>
+  <text x="880" y="180" text-anchor="middle" font-size="13" fill="#555">youtube-nocookie.com</text>
+  <text x="880" y="198" text-anchor="middle" font-size="13" fill="#555">(player embutido)</text>
+
+  <!-- Capas -->
+  <rect x="790" y="450" width="180" height="70" rx="12" fill="#f1eaf8" stroke="#7b4fa3" stroke-width="2"/>
+  <text x="880" y="480" text-anchor="middle" font-size="15" font-weight="700" fill="#1d1d1b">Capas</text>
+  <text x="880" y="500" text-anchor="middle" font-size="12" fill="#555">covers.openlibrary.org</text>
+
+  <!-- Setas -->
+  <path d="M200,245 L298,185" fill="none" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+  <text class="l" x="206" y="206" font-size="12" fill="#333">HTTP: página</text>
+
+  <path d="M200,295 L298,350" fill="none" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+  <text class="l" x="160" y="352" font-size="12" fill="#333">REST/JSON (fetch)</text>
+  <text class="l" x="160" y="368" font-size="12" fill="#333">GET POST PUT DELETE</text>
+
+  <path d="M490,355 L558,355" fill="none" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+  <text class="l" x="500" y="345" font-size="12" fill="#333">SQL</text>
+
+  <path d="M490,300 C600,250 700,270 788,330" fill="none" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+  <text class="l" x="640" y="258" font-size="12" fill="#333">HTTPS: busca</text>
+
+  <path d="M115,215 C115,120 500,60 788,165" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <text class="l" x="520" y="66" font-size="12" fill="#666">iframe do vídeo</text>
+
+  <path d="M115,325 C115,520 500,540 788,485" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <text class="l" x="440" y="545" font-size="12" fill="#666">imagens das capas</text>
+</svg>
