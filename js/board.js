@@ -1,8 +1,8 @@
-// Quadro da estante: listas por status, cartoes e ficha do livro.
+// Quadro da estante: uma lista por status, com cartoes editaveis.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { icon } from "./icons.js";
-import { LABEL, LISTS, fullDate, shortDate, state } from "./state.js";
+import { LABEL, LISTS, shortDate, state } from "./state.js";
 import { run } from "./toast.js";
 
 const $ = id => document.getElementById(id);
@@ -14,8 +14,6 @@ export function initBoard(reload) {
   refresh = reload;
   $("shelf-filter").addEventListener("input", renderBoard);
   $("shelf-order").addEventListener("change", reload);
-  $("detail").addEventListener("close", () => { openId = null; });
-  $("detail").addEventListener("click", e => { if (e.target === $("detail")) $("detail").close(); });
 }
 
 export function order() {
@@ -27,14 +25,12 @@ export function renderBoard() {
   const text = $("shelf-filter").value.trim().toLowerCase();
   const visible = state.books.filter(b => `${b.title} ${b.author || ""}`.toLowerCase().includes(text));
   $("board").replaceChildren(...LISTS.map(([status, label]) => list(status, label, visible.filter(b => b.status === status))));
-  if (openId) renderDetail();
 }
 
 function list(status, label, books) {
-  const cards = el("div", { class: "cards" }, books.map(card));
   const node = el("section", { class: `list ${status}`, "aria-label": label },
     el("h2", {}, label, el("span", { class: "count" }, books.length)),
-    cards,
+    el("div", { class: "cards" }, books.length ? books.map(card) : el("p", { class: "empty" }, "Arraste um livro para cá")),
     status === "want" ? el("button", { type: "button", class: "add-card", onclick: () => $("search-q").focus() }, icon("plus"), "Adicionar livro") : null);
   node.addEventListener("dragover", e => { e.preventDefault(); node.classList.add("over"); });
   node.addEventListener("dragleave", e => { if (!node.contains(e.relatedTarget)) node.classList.remove("over"); });
@@ -47,64 +43,29 @@ function list(status, label, books) {
   return node;
 }
 
+// ── Cartao ──
 function card(b) {
-  const node = el("article", { class: "card", draggable: "true", tabindex: "0", "aria-label": `${b.title}, ${LABEL[b.status]}` },
-    b.cover_id ? cover(b.cover_id, "M") : null,
+  const i = LISTS.findIndex(([s]) => s === b.status);
+  const node = el("article", { class: `card ${b.status}`, draggable: "true" },
+    cover(b.cover_id, "S"),
     el("div", { class: "card-body" },
-      el("span", { class: `label ${b.status}`, title: LABEL[b.status] }),
       el("h3", {}, b.title),
-      el("div", { class: "badges" }, badges(b))));
-  node.addEventListener("click", () => openDetail(b.id));
-  node.addEventListener("keydown", e => { if (e.key === "Enter") openDetail(b.id); });
+      el("small", {}, b.author || ""),
+      stars(b)),
+    el("button", { type: "button", class: "x", title: "Remover da estante", "aria-label": `Remover ${b.title}`, onclick: () => remove(b) }, "×"),
+    el("div", { class: "mv" },
+      el("button", { type: "button", disabled: i === 0, title: i > 0 ? `Mover para ${LISTS[i - 1][1]}` : "", "aria-label": "Mover para a lista anterior",
+        onclick: () => update(b, { status: LISTS[i - 1][0] }) }, "←"),
+      el("button", { type: "button", class: "cm", "aria-expanded": String(openId === b.id), onclick: () => { openId = openId === b.id ? null : b.id; renderBoard(); } },
+        b.comment ? "Comentário" : "Comentar"),
+      el("span", { title: dateTitle(b) }, shortDate(b.finished_at || b.started_at || b.added_at)),
+      el("button", { type: "button", disabled: i === LISTS.length - 1, title: i < LISTS.length - 1 ? `Mover para ${LISTS[i + 1][1]}` : "", "aria-label": "Mover para a próxima lista",
+        onclick: () => update(b, { status: LISTS[i + 1][0] }) }, "→")),
+    openId === b.id ? el("textarea", { rows: 3, maxlength: 500, placeholder: "Comentário", "aria-label": "Comentário",
+      onchange: e => update(b, { comment: e.target.value.trim() || null }, "Comentário salvo.") }, b.comment || "") : null);
   node.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", String(b.id)); node.classList.add("drag"); });
   node.addEventListener("dragend", () => node.classList.remove("drag"));
   return node;
-}
-
-function badges(b) {
-  const items = [];
-  if (b.rating) items.push(el("span", { class: "badge rating", title: `Nota ${b.rating}` }, icon("star"), b.rating));
-  if (b.comment) items.push(el("span", { class: "badge", title: "Tem comentário" }, icon("comment")));
-  const date = b.finished_at || b.started_at;
-  if (date) items.push(el("span", { class: `badge date ${b.status}`, title: b.status === "dropped" ? "Abandono" : b.finished_at ? "Conclusão" : "Início" }, icon("clock"), shortDate(date)));
-  if (b.pages) items.push(el("span", { class: "badge", title: "Páginas" }, icon("pages"), b.pages));
-  if (b.author) items.push(el("span", { class: "author" }, b.author));
-  return items;
-}
-
-// ── Ficha do livro ──
-function openDetail(id) {
-  openId = id;
-  renderDetail();
-  if (!$("detail").open) $("detail").showModal();
-}
-
-function renderDetail() {
-  const b = state.books.find(x => x.id === openId);
-  const dialog = $("detail");
-  if (!b) {
-    if (dialog.open) dialog.close();
-    return;
-  }
-  dialog.replaceChildren(
-    el("button", { type: "button", class: "close", "aria-label": "Fechar", onclick: () => dialog.close() }, "×"),
-    el("div", { class: "detail-grid" },
-      cover(b.cover_id, "M"),
-      el("div", {},
-        el("h2", { id: "detail-title" }, b.title),
-        el("p", { class: "meta" }, [b.author, b.pages && `${b.pages} páginas`].filter(Boolean).join(" · ")),
-        el("label", { class: "field" }, "Status",
-          el("select", { onchange: e => update(b, { status: e.target.value }) },
-            LISTS.map(([v, l]) => el("option", { value: v, selected: v === b.status }, l)))),
-        el("div", { class: "field" }, "Nota", stars(b)),
-        el("label", { class: "field" }, "Comentário",
-          el("textarea", { rows: 4, maxlength: 500, placeholder: "O que achou do livro?",
-            onchange: e => update(b, { comment: e.target.value.trim() || null }, "Comentário salvo.") }, b.comment || "")),
-        el("dl", { class: "dates" },
-          el("dt", {}, "Adicionado"), el("dd", {}, fullDate(b.added_at)),
-          b.started_at ? [el("dt", {}, "Início"), el("dd", {}, fullDate(b.started_at))] : null,
-          b.finished_at ? [el("dt", {}, b.status === "dropped" ? "Abandono" : "Conclusão"), el("dd", {}, fullDate(b.finished_at))] : null),
-        el("button", { type: "button", class: "remove", onclick: () => remove(b) }, "Remover da estante"))));
 }
 
 function stars(b) {
@@ -112,8 +73,13 @@ function stars(b) {
     Array.from({ length: RATING_MAX }, (_, i) => {
       const n = i + 1;
       return el("button", { type: "button", class: b.rating >= n ? "on" : "", title: b.rating === n ? "Remover nota" : `Nota ${n}`,
-        onclick: () => update(b, { rating: b.rating === n ? null : n }) }, icon("star"));
+        onclick: () => update(b, { rating: b.rating === n ? null : n }) }, "★");
     }));
+}
+
+function dateTitle(b) {
+  if (b.finished_at) return b.status === "dropped" ? "Data do abandono" : "Data da conclusão";
+  return b.started_at ? "Data de início" : "Data em que foi adicionado";
 }
 
 async function update(b, data, done) {
@@ -125,6 +91,5 @@ async function update(b, data, done) {
 async function remove(b) {
   if (!confirm(`Remover "${b.title}" da estante?`)) return;
   await run(() => api.remove(b.id), { loading: "Removendo...", done: "Livro removido." });
-  $("detail").close();
   await refresh();
 }

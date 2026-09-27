@@ -1,6 +1,7 @@
 // Inicializacao da pagina.
 import { api } from "./api.js";
 import { initBoard, order, renderBoard } from "./board.js";
+import { initLayout } from "./layout.js";
 import { loadPanel } from "./panel.js";
 import { initSearch, renderResults } from "./search.js";
 import { state } from "./state.js";
@@ -15,6 +16,7 @@ async function refresh() {
   await loadPanel();
 }
 
+initLayout();
 initSearch(refresh);
 initBoard(refresh);
 refresh();

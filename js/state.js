@@ -14,9 +14,6 @@ export function hasBook(olKey) {
 }
 
 export function shortDate(iso) {
-  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "");
+  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
 }
 
-export function fullDate(iso) {
-  return new Date(iso).toLocaleDateString("pt-BR");
-}

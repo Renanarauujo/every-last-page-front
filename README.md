@@ -56,11 +56,13 @@ tudo, use `docker compose down -v`.
 | Buscar livros, filtrando por campo (título, autor, ISBN), idioma e ordem | `GET /books/search?q=&field=&language=&sort=` |
 | Adicionar à estante | `POST /shelf` |
 | Mostrar o quadro com as listas Quero ler, Lendo, Lido e Abandonado, com filtro por texto e ordenação | `GET /shelf?order=` |
-| Arrastar o cartão para outra lista, ou abrir a ficha do livro e trocar o status, dar nota de 1 a 5 e comentar | `PUT /shelf/{id}` |
-| Remover da estante, pela ficha do livro | `DELETE /shelf/{id}` |
+| Arrastar o cartão para outra lista (ou usar ← e →), dar nota de 1 a 5 nas estrelas e comentar, no próprio cartão | `PUT /shelf/{id}` |
+| Remover da estante pelo × do cartão | `DELETE /shelf/{id}` |
 | Painel: contagem por status, páginas lidas, nota média, livros lidos por mês e distribuição das notas | `GET /shelf/summary` |
 
-Cada chamada mostra o estado (carregando, sucesso ou erro). A interface usa as cores do ícone do
+Cada chamada mostra o estado (carregando, sucesso ou erro). A largura das três colunas se ajusta
+arrastando os divisores entre elas, com limites para o quadro nunca ficar estreito demais; a escolha
+fica salva no navegador, e o duplo clique no divisor volta ao padrão. A interface usa as cores do ícone do
 projeto (azul-marinho, creme e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
 (licença SIL Open Font License, em `fonts/OFL.txt`), servida pelo próprio front.
 
@@ -96,9 +98,10 @@ js/api.js           chamadas à API
 js/dom.js           criação de elementos sem innerHTML
 js/toast.js         mensagens de carregando, sucesso e erro
 js/state.js         estado da estante e nomes dos status
-js/icons.js         ícones em SVG dos cartões
+js/icons.js         ícones em SVG
+js/layout.js        largura ajustável das colunas
 js/search.js        busca com filtros e adição
-js/board.js         quadro, cartões, arrastar e soltar e ficha do livro
+js/board.js         quadro, cartões e arrastar e soltar
 js/panel.js         painel
 img/logo.png        ícone do projeto
 fonts/              fonte Rubik (woff2) e licença
