@@ -116,7 +116,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .stars { display: flex; margin-top: 2px; }
 .stars button { border: 0; background: none; padding: 0 1px; font-size: 14px; line-height: 1; color: #d3dbe6; cursor: pointer; }
 .stars button.on { color: var(--coral); }
-.stars button:hover { color: var(--coral); }
+/* Previa acumulada: a estrela sob o cursor e todas as anteriores acendem. */
+.stars:hover button { color: #d3dbe6; }
+.stars button:hover, .stars button:has(~ button:hover) { color: var(--coral); }
 .mv { grid-column: 1 / -1; display: flex; align-items: center; gap: 4px; border-top: 1px solid #edf1f5; padding-top: 5px; font-size: 11.5px; color: #8391a8; }
 .mv button { border: 0; background: none; color: #8391a8; padding: 0 4px; cursor: pointer; }
 .mv button:hover:not(:disabled) { color: var(--coral-dark); }
@@ -168,7 +170,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .sheet-stars { display: flex; gap: 2px; }
 .sheet-stars button { border: 0; background: none; padding: 0 2px; font-size: 26px; line-height: 1; color: #0d1c3133; cursor: pointer; }
 .sheet-stars button.on { color: var(--coral); }
-.sheet-stars button:hover { color: var(--coral); }
+.sheet-stars:hover button { color: #0d1c3133; }
+.sheet-stars button:hover, .sheet-stars button:has(~ button:hover) { color: var(--coral); }
 .dates { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .date { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #4a5568; }
 .date input { border: 1.5px solid var(--navy-800); border-radius: 6px; padding: 6px 8px; background: #fff; color: var(--navy-800); }
