@@ -108,8 +108,17 @@ function renderProfile(p) {
         figure(p.completion_rate === null ? "-" : `${p.completion_rate}%`, "do que começa, termina"),
         figure(p.avg_days === null ? "-" : num(p.avg_days), "dias por livro"),
         figure(p.pages_per_day === null ? "-" : num(Math.round(p.pages_per_day)), "páginas por dia"))),
-    p.favorite ? el("p", { class: "fav" }, el("span", {}, "Favorito"), el("b", {}, p.favorite.title),
-      p.favorite.author ? ` · ${p.favorite.author}` : "") : null);
+    p.favorite ? favorite(p.favorite) : null);
+}
+
+// Favorito: maior nota entre os lidos, com mais paginas por dia.
+function favorite(f) {
+  const why = [`${f.rating}★`];
+  if (f.pages && f.days) why.push(`${num(f.pages)} páginas em ${plural(f.days, "dia", "dias")}`);
+  return el("div", { class: "fav", title: "Maior nota entre os lidos, com mais páginas por dia" },
+    el("span", {}, "Favorito"),
+    el("p", {}, el("b", {}, f.title), f.author ? ` · ${f.author}` : ""),
+    el("small", {}, why.join(" · ")));
 }
 
 // Ranking numerado, com ate tres posicoes.
