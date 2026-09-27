@@ -22,7 +22,13 @@ export function coverUrl(id, size = "M") {
 
 export function cover(id, size) {
   const src = coverUrl(id, size);
-  return src
-    ? el("img", { class: "cover", src, alt: "", loading: "lazy" })
-    : el("div", { class: "cover none", "aria-hidden": "true" });
+  if (!src) return placeholder();
+  const img = el("img", { class: "cover", src, alt: "", loading: "lazy" });
+  // Capa indisponivel na Open Library vira o quadro vazio.
+  img.addEventListener("error", () => img.replaceWith(placeholder()), { once: true });
+  return img;
+}
+
+function placeholder() {
+  return el("div", { class: "cover none", "aria-hidden": "true" });
 }
