@@ -1,14 +1,14 @@
-// Quadro da estante: uma lista por status, com cartoes editaveis.
+// Quadro da estante: uma lista por status, com cartoes que abrem a ficha lateral.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
 import { icon } from "./icons.js";
+import { openSheet } from "./sheet.js";
 import { LABEL, LISTS, shortDate, state } from "./state.js";
 import { run } from "./toast.js";
 
 const $ = id => document.getElementById(id);
 const RATING_MAX = 5;
 let refresh = async () => {};
-let openId = null;
 
 export function initBoard(reload) {
   refresh = reload;
@@ -46,7 +46,7 @@ function list(status, label, books) {
 // ── Cartao ──
 function card(b) {
   const i = LISTS.findIndex(([s]) => s === b.status);
-  const node = el("article", { class: `card ${b.status}`, draggable: "true" },
+  const node = el("article", { class: "card", draggable: "true", tabindex: "0", "aria-label": `${b.title}. Abrir ficha` },
     cover(b.cover_id, "S"),
     el("div", { class: "card-body" },
       el("h3", {}, b.title),
@@ -56,13 +56,13 @@ function card(b) {
     el("div", { class: "mv" },
       el("button", { type: "button", disabled: i === 0, title: i > 0 ? `Mover para ${LISTS[i - 1][1]}` : "", "aria-label": "Mover para a lista anterior",
         onclick: () => update(b, { status: LISTS[i - 1][0] }) }, "←"),
-      el("button", { type: "button", class: "cm", "aria-expanded": String(openId === b.id), onclick: () => { openId = openId === b.id ? null : b.id; renderBoard(); } },
-        b.comment ? "Comentário" : "Comentar"),
+      el("button", { type: "button", class: "cm", onclick: () => openSheet(b.id, "#sheet-comment") }, b.comment ? "Comentário" : "Comentar"),
       el("span", { title: dateTitle(b) }, shortDate(b.finished_at || b.started_at || b.added_at)),
       el("button", { type: "button", disabled: i === LISTS.length - 1, title: i < LISTS.length - 1 ? `Mover para ${LISTS[i + 1][1]}` : "", "aria-label": "Mover para a próxima lista",
-        onclick: () => update(b, { status: LISTS[i + 1][0] }) }, "→")),
-    openId === b.id ? el("textarea", { rows: 3, maxlength: 500, placeholder: "Comentário", "aria-label": "Comentário",
-      onchange: e => update(b, { comment: e.target.value.trim() || null }, "Comentário salvo.") }, b.comment || "") : null);
+        onclick: () => update(b, { status: LISTS[i + 1][0] }) }, "→")));
+  // Clique fora dos controles abre a ficha lateral.
+  node.addEventListener("click", e => { if (!e.target.closest("button")) openSheet(b.id); });
+  node.addEventListener("keydown", e => { if (e.key === "Enter" && e.target === node) openSheet(b.id); });
   node.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", String(b.id)); node.classList.add("drag"); });
   node.addEventListener("dragend", () => node.classList.remove("drag"));
   return node;
