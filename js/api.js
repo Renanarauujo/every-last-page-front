@@ -10,7 +10,8 @@ async function request(path, options = {}) {
       headers: { "Content-Type": "application/json" },
       ...options,
     });
-  } catch {
+  } catch (err) {
+    if (err.name === "AbortError") throw err;
     throw new Error("A API não respondeu. Verifique se ela está em execução.");
   }
   if (res.status === 204) return null;
@@ -30,7 +31,7 @@ function errorText(status, body) {
 const query = params => new URLSearchParams(params).toString();
 
 export const api = {
-  search: (q, filters = {}) => request(`/books/search?${query({ q, limit: SEARCH_LIMIT, ...filters })}`),
+  search: (q, filters = {}, signal) => request(`/books/search?${query({ q, limit: SEARCH_LIMIT, ...filters })}`, { signal }),
   list: (order = "recent") => request(`/shelf?${query({ order })}`),
   add: book => request("/shelf", { method: "POST", body: JSON.stringify(book) }),
   update: (id, data) => request(`/shelf/${id}`, { method: "PUT", body: JSON.stringify(data) }),

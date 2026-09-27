@@ -53,7 +53,7 @@ tudo, use `docker compose down -v`.
 
 | Ação | Chamada à API |
 |---|---|
-| Buscar livros, filtrando por campo (título, autor, ISBN), idioma e ordem | `GET /books/search?q=&field=&language=&sort=` |
+| Buscar livros enquanto digita, filtrando por campo (título, autor, ISBN), idioma e ordem | `GET /books/search?q=&field=&language=&sort=` |
 | Adicionar à estante | `POST /shelf` |
 | Mostrar o quadro com as listas Quero ler, Lendo, Lido e Abandonado, com filtro por texto e ordenação | `GET /shelf?order=` |
 | Arrastar o cartão para outra lista (ou usar ← e →) e dar nota nas estrelas do cartão | `PUT /shelf/{id}` |
@@ -61,7 +61,9 @@ tudo, use `docker compose down -v`.
 | Remover da estante pelo × do cartão ou pela ficha | `DELETE /shelf/{id}` |
 | Painel: contagem por status, páginas lidas, nota média, livros lidos por mês e distribuição das notas | `GET /shelf/summary` |
 
-Cada chamada mostra o estado (carregando, sucesso ou erro). A largura das três colunas se ajusta
+A busca começa enquanto se digita, 400 ms depois da última tecla, cancela a busca anterior ainda
+em andamento e guarda os resultados já vistos, para não repetir chamadas. Cada chamada mostra o
+estado (carregando, sucesso ou erro). A largura das três colunas se ajusta
 arrastando os divisores entre elas, com limites para o quadro nunca ficar estreito demais; a escolha
 fica salva no navegador, e o duplo clique no divisor volta ao padrão. A interface usa as cores do ícone do
 projeto (azul-marinho, branco e coral) e a fonte [Rubik](https://github.com/googlefonts/rubik)
@@ -79,7 +81,7 @@ Internet Archive.
   pelo cabeçalho `User-Agent`, como a [documentação](https://openlibrary.org/developers/api)
   recomenda.
 - **Limites:** a documentação indica até 1 requisição por segundo sem identificação. A API
-  própria limita a 20 buscas por minuto por IP.
+  própria limita a 60 buscas por minuto por IP.
 
 Rotas usadas:
 

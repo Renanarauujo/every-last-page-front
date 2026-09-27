@@ -5,28 +5,72 @@ import { hasBook } from "./state.js";
 import { run, show } from "./toast.js";
 
 const $ = id => document.getElementById(id);
+const MIN_LENGTH = 2;
+const DEBOUNCE_MS = 400;
+const CACHE_SIZE = 50;
+
 let hits = [];
 let onAdd = async () => {};
+let timer = null;
+let controller = null;
+let lastKey = "";
+const cache = new Map();
 
 export function initSearch(afterAdd) {
   onAdd = afterAdd;
+  $("search-q").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(search, DEBOUNCE_MS);
+  });
   $("search-form").addEventListener("submit", e => {
     e.preventDefault();
-    search();
+    clearTimeout(timer);
+    search(true);
   });
   for (const id of ["search-field", "search-language", "search-sort"]) {
-    $(id).addEventListener("change", () => $("search-q").value.trim().length >= 2 && search());
+    $(id).addEventListener("change", () => search(true));
   }
 }
 
-async function search() {
+// Busca enquanto o usuario digita, cancelando a busca anterior ainda em andamento.
+async function search(force = false) {
   const q = $("search-q").value.trim();
-  if (q.length < 2) return show("Digite ao menos 2 caracteres.", "error");
+  if (q.length < MIN_LENGTH) {
+    controller?.abort();
+    hits = [];
+    lastKey = "";
+    renderResults();
+    return;
+  }
   const filters = { field: $("search-field").value, language: $("search-language").value, sort: $("search-sort").value };
-  const res = await run(() => api.search(q, filters), { loading: "Buscando na Open Library..." });
-  if (!res) return;
-  hits = res;
-  renderResults(true);
+  const key = JSON.stringify([q.toLowerCase(), filters]);
+  if (key === lastKey && !force) return;
+  lastKey = key;
+  if (cache.has(key)) {
+    hits = cache.get(key);
+    renderResults(true);
+    return;
+  }
+  controller?.abort();
+  const current = (controller = new AbortController());
+  $("results-info").textContent = "Buscando...";
+  try {
+    const res = await api.search(q, filters, current.signal);
+    if (current !== controller) return;
+    remember(key, res);
+    hits = res;
+    renderResults(true);
+  } catch (err) {
+    if (err.name === "AbortError" || current !== controller) return;
+    lastKey = "";
+    $("results-info").textContent = err.message;
+    show(err.message, "error");
+  }
+}
+
+function remember(key, value) {
+  cache.set(key, value);
+  if (cache.size > CACHE_SIZE) cache.delete(cache.keys().next().value);
 }
 
 export function renderResults(searched = false) {
