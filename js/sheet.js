@@ -1,6 +1,7 @@
 // Ficha do livro em janela: status, nota, datas, comentario e remocao.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
+import { icon } from "./icons.js";
 import { LABEL, LISTS, state } from "./state.js";
 import { run } from "./toast.js";
 
@@ -45,7 +46,7 @@ export function renderSheet() {
     section("Datas da leitura", dates(b)),
     section("Comentário", comment(b)),
     el("footer", { class: "sheet-foot" },
-      el("button", { type: "button", class: "remove", onclick: () => remove(b) }, "Remover da estante")));
+      el("button", { type: "button", class: "remove", onclick: () => remove(b) }, icon("trash"), "Remover da estante")));
 }
 
 function section(title, body) {

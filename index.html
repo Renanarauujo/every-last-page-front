@@ -13,8 +13,9 @@
     <aside class="side" aria-labelledby="search-title">
       <div class="brand"><img src="img/logo.png" alt="" width="30" height="30"><b>Every Last Page</b></div>
       <h2 id="search-title" class="sr">Buscar livros</h2>
-      <form id="search-form">
-        <input id="search-q" type="search" placeholder="Buscar título, autor ou ISBN" aria-label="Termo da busca" minlength="2" maxlength="100" autocomplete="off">
+      <form id="search-form" class="search-row" novalidate>
+        <input id="search-q" type="search" placeholder="Título, autor ou ISBN" aria-label="Termo da busca" minlength="2" maxlength="100" autocomplete="off">
+        <button id="search-btn" type="submit" class="search-btn"></button>
       </form>
       <div class="qf">
         <select id="search-field" aria-label="Buscar em"><option value="all">Tudo</option><option value="title">Título</option><option value="author">Autor</option><option value="isbn">ISBN</option></select>

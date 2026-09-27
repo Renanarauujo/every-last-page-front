@@ -1,47 +1,37 @@
 // Busca na Open Library, com filtros, e adicao a estante.
 import { api } from "./api.js";
 import { cover, el } from "./dom.js";
+import { icon } from "./icons.js";
 import { hasBook } from "./state.js";
 import { run, show } from "./toast.js";
 
 const $ = id => document.getElementById(id);
 const MIN_LENGTH = 2;
-const DEBOUNCE_MS = 400;
 const CACHE_SIZE = 50;
 
 let hits = [];
 let onAdd = async () => {};
-let timer = null;
 let controller = null;
 let lastKey = "";
 const cache = new Map();
 
 export function initSearch(afterAdd) {
   onAdd = afterAdd;
-  $("search-q").addEventListener("input", () => {
-    clearTimeout(timer);
-    timer = setTimeout(search, DEBOUNCE_MS);
-  });
+  $("search-btn").replaceChildren(icon("search"), "Pesquisar");
   $("search-form").addEventListener("submit", e => {
     e.preventDefault();
-    clearTimeout(timer);
     search(true);
   });
+  // Troca de filtro refaz a busca apenas se ja houver uma feita.
   for (const id of ["search-field", "search-language", "search-sort"]) {
-    $(id).addEventListener("change", () => search(true));
+    $(id).addEventListener("change", () => lastKey && search(true));
   }
 }
 
-// Busca enquanto o usuario digita, cancelando a busca anterior ainda em andamento.
+// Busca pelo botao ou Enter, cancelando a busca anterior ainda em andamento.
 async function search(force = false) {
   const q = $("search-q").value.trim();
-  if (q.length < MIN_LENGTH) {
-    controller?.abort();
-    hits = [];
-    lastKey = "";
-    renderResults();
-    return;
-  }
+  if (q.length < MIN_LENGTH) return show("Digite ao menos 2 caracteres.", "error");
   const filters = { field: $("search-field").value, language: $("search-language").value, sort: $("search-sort").value };
   const key = JSON.stringify([q.toLowerCase(), filters]);
   if (key === lastKey && !force) return;
