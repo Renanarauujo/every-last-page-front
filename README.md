@@ -51,6 +51,24 @@ Pré-requisitos: [Git](https://git-scm.com) e [Docker](https://www.docker.com) c
 A estante fica no volume `shelf-data` e continua lá depois de `docker compose down`. Para apagar
 tudo, use `docker compose down -v`.
 
+### Sem Docker
+
+O front é só HTML, CSS e JavaScript, sem dependências para instalar. Basta um servidor de arquivos
+estáticos e a API rodando em `http://localhost:8000`.
+
+1. Suba a API seguindo a seção "Sem Docker" do
+   [README da API](https://github.com/Renanarauujo/every-last-page-api#sem-docker).
+2. Em outro terminal, sirva a pasta do front na porta 8080 (a origem liberada no CORS da API):
+
+   ```bash
+   cd every-last-page-front
+   python -m http.server 8080
+   ```
+
+3. Abra http://localhost:8080.
+
+O endereço da API fica em `js/config.js`.
+
 ## O que a tela faz
 
 | Ação | Chamada à API |
