@@ -108,7 +108,7 @@ Rotas usadas:
 
 | Rota | Uso |
 |---|---|
-| `GET https://openlibrary.org/search.json?q=&limit=&fields=key,title,author_name,number_of_pages_median,cover_i` | [Search API](https://openlibrary.org/dev/docs/api/search): busca de livros, chamada pela API própria |
+| `GET https://openlibrary.org/search.json?q=&limit=&fields=key,title,author_name,number_of_pages_median,cover_i,subject` | [Search API](https://openlibrary.org/dev/docs/api/search): busca de livros, chamada pela API própria |
 | `GET https://covers.openlibrary.org/b/id/{cover_id}-{S,M}.jpg` | [Covers API](https://openlibrary.org/dev/docs/api/covers): imagem da capa, carregada pelo navegador |
 
 ## Estrutura
